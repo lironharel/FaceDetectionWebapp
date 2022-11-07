@@ -26,7 +26,7 @@ class App extends Component {
     }
 
     onInputChange = (e) => {
-        this.state.input = e.target.value;
+        this.setState({input: e.target.value});
     }
 
     onBtnSubmitClick = () => {
