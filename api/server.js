@@ -71,19 +71,21 @@ const getUserById = (id) => {
     return userReturned;
 }
 
-const addUserToDB = (name, email, password) => {
+const addUserToDB = async (name, email, password) => {
     if (database.users.some(user => (user.email === email))){
         throw new Error("User exists");
     } 
     else {
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = {
             id: database.users.length.toString(),
             name: name,
             email: email,
-            password: password,
+            password: hashedPassword,
             createdAt: new Date(),
             entries: 0
         };
+
         database.users.push(newUser);
 
         return newUser.id;
@@ -98,14 +100,11 @@ app.get('/', (req, res) => {
 });
 
 app.post('/signin', async (req, res) => {
-    console.log(req.body);
     const {email, password} = req.body;
 
     try {
-        await getUserByEmailPassword(email, password);
-        res.json({
-            success: true
-        });
+        const user = await getUserByEmailPassword(email, password);
+        res.json(user);
     } 
     catch (err) {
         res.status(400).json({
@@ -115,11 +114,11 @@ app.post('/signin', async (req, res) => {
     }
 })
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     const {name, email, password} = req.body;
 
     try {
-        const userId = addUserToDB(name, email, password);
+        const userId = await addUserToDB(name, email, password);
         res.send({
             success: true,
             id: userId
@@ -154,7 +153,7 @@ app.put('/image', (req, res) => {
     try {
         const user = getUserById(id);
         user.entries++;
-        res.json(user.entries);
+        res.json({entries: user.entries});
     }
     catch (err) {
         res.status(400).send({

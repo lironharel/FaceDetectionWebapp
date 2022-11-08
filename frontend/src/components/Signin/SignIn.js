@@ -20,19 +20,17 @@ class Signin extends Component {
     signIn = () => {
         fetch('http://localhost:3000/signin', {
             method: "post",
-            headers: {'Content-Type': 'application/json'},
+            headers: {'content-type': 'application/json'},
             body: JSON.stringify({
                 email: this.state.email,
                 password: this.state.password
             })
         })
         .then(res => res.json())
-        .then(data => {
-            if (data.success === true) {
-                this.props.setRoute('home')
-            }
-            else {
-                console.log("faileddddd")
+        .then((user) => {
+            if(user.id) {
+                this.props.loadUser(user);
+                this.props.setRoute('home');
             }
         })
     }

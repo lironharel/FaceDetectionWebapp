@@ -21,18 +21,34 @@ class App extends Component {
             imgUrl: "",
             pixeledBox: {},
             route: "signin",
-            isSignedIn: false
+            isSignedIn: false,
+            user: {
+                id: '',
+                name: '',
+                email: '',
+                entries: 0,
+                joined: ''
+            }
         }
+    }
+
+    loadUser = (data) => {
+        this.setState({
+            user: {
+                id: data.id,
+                name: data.name,
+                email: data.email,
+                entries: data.entries,
+                joined: data.joined
+            }
+        })
     }
 
     onInputChange = (e) => {
         this.setState({input: e.target.value});
     }
 
-    onBtnSubmitClick = () => {
-        this.setState({
-            imgUrl: this.state.input
-        })
+    updateBoundingBox = async (imgUrl) => {
         const raw = JSON.stringify({
             "user_app_id": {
                 "user_id": USER_ID,
@@ -42,7 +58,7 @@ class App extends Component {
                 {
                     "data": {
                         "image": {
-                            "url": this.state.input
+                            "url": imgUrl
                         }
                     }
                 }
@@ -57,13 +73,33 @@ class App extends Component {
             },
             body: raw
         };
-        fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
+
+        return fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
         .then(response => response.json())
-        .then(data => {console.log(data); return this.convertBoxToPixelCoords(data.outputs[0].data.regions[0].region_info.bounding_box)})
-        .then(pixeledBox => {
-            this.setState({pixeledBox: pixeledBox}); 
-        })
-        .catch(error => console.log('error', error));
+        .then(data => this.convertBoxToPixelCoords(data.outputs[0].data.regions[0].region_info.bounding_box))
+        .then(pixeledBox => this.setState({pixeledBox: pixeledBox}))
+        .catch(error => console.log('Error getting bounding boxes: ', error));
+    }
+
+    updateUserEntries = async () => {
+        return(
+            fetch('http://localhost:3000/image', {
+                method: 'put',
+                headers: {'content-type': 'application/json'},
+                body: JSON.stringify({id: this.state.user.id})
+            })
+            .then(res => res.json())
+            .then(data => this.setState({user: Object.assign(this.state.user, {entries: data.entries})}))
+            .catch(error => console.log('Error updating user entries:', error))
+        )
+    }
+
+    onBtnSubmitClick = async () => {
+        const imgUrl = this.state.input
+
+        this.setState({imgUrl});
+        await this.updateBoundingBox(imgUrl);
+        this.updateUserEntries();
     }
 
     convertBoxToPixelCoords = (box) => {
@@ -93,19 +129,19 @@ class App extends Component {
     }
 
     render() {
-        const {route, isSignedIn, pixeledBox, imgUrl} = this.state;
+        const {route, isSignedIn, pixeledBox, imgUrl, user} = this.state;
 
         return (
             <div className="App">
                 <Navigation isSignedIn={isSignedIn} setRoute={this.setRoute} />
                 {
                 route === "signin" ?
-                <Signin setRoute={this.setRoute} /> :
+                <Signin loadUser={this.loadUser} setRoute={this.setRoute} /> :
                 route === "register" ?
-                <Register setRoute={this.setRoute} /> :
+                <Register loadUser={this.loadUser} setRoute={this.setRoute} /> :
                 <>
                     <Logo />
-                    <Rank />
+                    <Rank name={user.name} entries={user.entries} />
                     <ImageLinkForm 
                         onBtnSubmitClick={this.onBtnSubmitClick} 
                         onInputChange={this.onInputChange} 
