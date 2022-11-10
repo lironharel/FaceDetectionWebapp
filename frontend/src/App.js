@@ -8,28 +8,25 @@ import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Signin from './components/Signin/SignIn';
 import Register from "./components/Register/Register";
 
-const USER_ID = 'c1k4gvoiafxx';
-const PAT = '2dc5fc971f4b45c88852bddacb586a69';
-const APP_ID = '13c69cbeabc3472f936649b085e6907a';
-const MODEL_ID = 'face-detection';
+const initialState = {
+    input: "",
+    imgUrl: "",
+    pixeledBox: {},
+    route: "signin",
+    isSignedIn: false,
+    user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+    }
+}
 
 class App extends Component {
     constructor() {
         super();
-        this.state = {
-            input: "",
-            imgUrl: "",
-            pixeledBox: {},
-            route: "signin",
-            isSignedIn: false,
-            user: {
-                id: '',
-                name: '',
-                email: '',
-                entries: 0,
-                joined: ''
-            }
-        }
+        this.state = initialState;
     }
 
     loadUser = (data) => {
@@ -49,36 +46,15 @@ class App extends Component {
     }
 
     updateBoundingBox = async (imgUrl) => {
-        const raw = JSON.stringify({
-            "user_app_id": {
-                "user_id": USER_ID,
-                "app_id": APP_ID
-            },
-            "inputs": [
-                {
-                    "data": {
-                        "image": {
-                            "url": imgUrl
-                        }
-                    }
-                }
-            ]
-        });
-        
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': 'Key ' + PAT
-            },
-            body: raw
-        };
-
-        return fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
+        fetch("http://localhost:3000/facedetect", {
+        method: 'POST',
+        headers: {'content-type' : 'application/json'},
+        body: JSON.stringify({imgUrl: imgUrl})
+        })
         .then(response => response.json())
         .then(data => this.convertBoxToPixelCoords(data.outputs[0].data.regions[0].region_info.bounding_box))
         .then(pixeledBox => this.setState({pixeledBox: pixeledBox}))
-        .catch(error => console.log('Error getting bounding boxes: ', error));
+        .catch(error => console.log('Error getting bounding boxes: ', error))
     }
 
     updateUserEntries = async () => {
@@ -116,16 +92,14 @@ class App extends Component {
     }
 
     setRoute = (route) => {
-        this.setState({route});
-        this.updateSignedInFlag(route);
-    }
-
-    updateSignedInFlag = (route) => {
-        if (route === "home") {
+        if (route === 'home') {
             this.setState({isSignedIn: true});
-        } else if (route === "signin" || route ==='register') {
-            this.setState({isSignedIn: false});
         }
+        else {
+            this.state = initialState;
+        }
+
+        this.setState({route});
     }
 
     render() {

@@ -6,7 +6,9 @@ const FaceRecognition = (props) => {
     return (
         <div className="center ma">
             <div className="absolute mt2">
-                <img id="face-image" src={imgUrl} width="500px" height="auto" alt="face" />
+                {imgUrl.length > 0
+                ? <img id="face-image" src={imgUrl} width="500px" height="auto" alt="face" /> 
+                : ""}
                 <div
                     className="box"
                     style={{
