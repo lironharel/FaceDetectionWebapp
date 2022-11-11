@@ -11,11 +11,8 @@ import { handleFaceDetect } from "./controllers/facedetect.js";
 const db = knex({
     client: 'pg',
     connection: {
-      host : '10.100.102.2',
-      port : 5432,
-      user : 'postgres',
-      password : 'Uxra1111',
-      database : 'face_detection'
+      connectString : process.env.DATABASE_URL,
+      ssl: true
     }
   });
 
