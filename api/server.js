@@ -21,7 +21,7 @@ const db = knex({
     ssl: true
   })
 
-  console.log("DB: ", db)
+//   console.log("DB: ", db)
 // Express config
 const app = express();
 app.use(express.json());
