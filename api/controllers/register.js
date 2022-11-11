@@ -1,5 +1,5 @@
 export const handleRegister = async (db, bcrypt) => async (req, res) => {
-    console.log("request = ", req.body)
+    console.log("request = ", req.body, db, bcrypt)
     const {name, email, password} = req.body;
 
     try {
@@ -18,6 +18,8 @@ export const handleRegister = async (db, bcrypt) => async (req, res) => {
 }
 
 const addUserToDB = async (name, email, password, db, bcrypt) => {
+    console.log(`addUserToDB started`);
+
     const hashedPassword = await bcrypt.hash(password, 10);
     
     let user;
