@@ -42,6 +42,8 @@ const addUserToDB = async (name, email, password, db, bcrypt) => {
 
             await trx.commit()
 
+            console.log(`Transaction succeded`);
+
             return user;
         }
         catch (err) {
