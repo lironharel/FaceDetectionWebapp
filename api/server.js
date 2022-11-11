@@ -34,7 +34,7 @@ app.listen(PORT, () => {
 });
 
 // Routes
-app.get('/', (req, res) => res.json({status: 'ok'}));
+app.get('/', (req, res) => db.select('*').from('users').then(users => res.json({users: users}).catch(err => res.json({err: err}))));
 app.post('/signin', await handleSignIn(db, bcrypt));
 app.post('/register', await handleRegister(db, bcrypt));
 app.put('/image', await handleImage(db));
