@@ -16,6 +16,12 @@ const db = knex({
     }
   });
 
+  console.log("Connection:", {
+    connectString : process.env.DATABASE_URL,
+    ssl: true
+  })
+
+  console.log("DB: ", db)
 // Express config
 const app = express();
 app.use(express.json());

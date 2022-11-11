@@ -1,5 +1,4 @@
 export const handleRegister = async (db, bcrypt) => async (req, res) => {
-    console.log("request = ", req.body, db, bcrypt)
     const {name, email, password} = req.body;
 
     try {
