@@ -11,17 +11,10 @@ import { handleFaceDetect } from "./controllers/facedetect.js";
 const db = knex({
     client: 'pg',
     connection: {
-      connectString : process.env.DATABASE_URL,
-      ssl: {
-          rejectUnauthorized: false
-      }
+      connectionString : process.env.DATABASE_URL,
+      ssl: true
     }
   });
-
-  console.log("Connection:", {
-    connectString : process.env.DATABASE_URL,
-    ssl: true
-  })
 
 //   console.log("DB: ", db)
 // Express config
@@ -34,7 +27,7 @@ app.listen(PORT, () => {
 });
 
 // Routes
-app.get('/', (req, res) => db.select('*').from('users').then(users => res.json({users: users}).catch(err => res.json({err: err}))));
+app.get('/', (req, res) => res.json({status: 'ok'}));
 app.post('/signin', await handleSignIn(db, bcrypt));
 app.post('/register', await handleRegister(db, bcrypt));
 app.put('/image', await handleImage(db));
