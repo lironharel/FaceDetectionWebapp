@@ -9,15 +9,15 @@ export const handleRegister = async (db, bcrypt) => async (req, res) => {
         })
     }
     catch (err) {
+        console.log(err);
         res.status(400).json({
             status: "failed",
-            message: err
+            message: "Error adding user"
         })
     }
 }
 
 const addUserToDB = async (name, email, password, db, bcrypt) => {
-    console.log(`addUserToDB started`);
 
     const hashedPassword = await bcrypt.hash(password, 10);
     
@@ -43,8 +43,6 @@ const addUserToDB = async (name, email, password, db, bcrypt) => {
             .then(data => data[0])
 
             await trx.commit()
-
-            console.log(`Transaction succeded`);
 
             return user;
         }
