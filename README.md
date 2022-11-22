@@ -1,5 +1,5 @@
 # Face detection web app
-A responsive web app I've developed for detecting faces, using image URL's of human faces.
+A responsive web app I've developed that utilizes an image recognition deep learning model for detecting faces, using image URL's of human faces.
 
 The app implements a sign in page, a registration page, API calls to Clarifai's face recognition service and more.
 
