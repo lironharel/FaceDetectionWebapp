@@ -1,0 +1,8 @@
+# Node
+node_modules/
+
+# React build output
+frontend/build/
+
+# Environment files
+*.env
