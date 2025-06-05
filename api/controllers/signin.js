@@ -12,12 +12,12 @@ export const handleSignIn = async (db, bcrypt) => async (req, res) => {
         console.log(err)
         res.status(400).json({
             status: "failed",
-            error: 'error loging in'
+            error: 'invalid credentials'
         })
     }
 }
 
-const getUserByEmailPassword = async (email, password, db, bcrypt) => {
+export const getUserByEmailPassword = async (email, password, db, bcrypt) => {
     const loginTableUser = await db
     .select('*')
     .from('login')
@@ -29,14 +29,16 @@ const getUserByEmailPassword = async (email, password, db, bcrypt) => {
     }
     
     const passwordIsValid = await bcrypt.compare(password, loginTableUser.hash);
-    
-    if (passwordIsValid) {
-        const user = await db
-        .select('*')
-        .from('users')
-        .where('email', '=', email)
-        .then(data => data[0])
-        
-        return user;
+
+    if (!passwordIsValid) {
+        throw new Error('invalid credentials');
     }
-} 
+
+    const user = await db
+    .select('*')
+    .from('users')
+    .where('email', '=', email)
+    .then(data => data[0])
+
+    return user;
+}
