@@ -46,7 +46,7 @@ class App extends Component {
     }
 
     updateBoundingBox = async (imgUrl) => {
-        fetch("https://frozen-crag-50039.herokuapp.com/facedetect", {
+        fetch(`${process.env.REACT_APP_API_URL}/facedetect`, {
         method: 'POST',
         headers: {'content-type' : 'application/json'},
         body: JSON.stringify({imgUrl: imgUrl})
@@ -59,7 +59,7 @@ class App extends Component {
 
     updateUserEntries = async () => {
         return(
-            fetch('https://frozen-crag-50039.herokuapp.com/image', {
+            fetch(`${process.env.REACT_APP_API_URL}/image`, {
                 method: 'put',
                 headers: {'content-type': 'application/json'},
                 body: JSON.stringify({id: this.state.user.id})
