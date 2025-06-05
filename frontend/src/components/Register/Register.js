@@ -23,7 +23,7 @@ class Register extends Component {
     }
 
     register = () => {
-        fetch('https://frozen-crag-50039.herokuapp.com/register', {
+        fetch(`${process.env.REACT_APP_API_URL}/register`, {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

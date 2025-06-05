@@ -18,7 +18,7 @@ class Signin extends Component {
     }
 
     signIn = () => {
-        fetch('https://frozen-crag-50039.herokuapp.com/signin', {
+        fetch(`${process.env.REACT_APP_API_URL}/signin`, {
             method: "post",
             headers: {'content-type': 'application/json'},
             body: JSON.stringify({
