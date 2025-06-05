@@ -5,16 +5,17 @@ class Signin extends Component {
         super(props);
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            error: ""
         }
     }
 
     updateEmailState = (e) => {
-        this.setState({email: e.target.value})
+        this.setState({email: e.target.value, error: ""})
     }
 
     updatePasswordState = (e) => {
-        this.setState({password: e.target.value})
+        this.setState({password: e.target.value, error: ""})
     }
 
     signIn = () => {
@@ -31,8 +32,11 @@ class Signin extends Component {
             if(data.user) {
                 this.props.loadUser(data.user);
                 this.props.setRoute('home');
+            } else if (data.error) {
+                this.setState({ error: data.error });
             }
         })
+        .catch(() => this.setState({ error: 'unable to sign in' }))
     }
     
     render() {
@@ -72,6 +76,9 @@ class Signin extends Component {
                                     />
                             </div>
                         </fieldset>
+                        {this.state.error && (
+                            <div className="mt2 red center">{this.state.error}</div>
+                        )}
                         <div className="center">
                             <input
                                 onClick={this.signIn}
