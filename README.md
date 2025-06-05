@@ -32,4 +32,26 @@ The backend api is deployed to Heroku, hosted at: https://frozen-crag-50039.hero
 (Try the main end point: GET https://frozen-crag-50039.herokuapp.com/)
 
 ## Database
-A PostgreSQL database was used for storing the user and login information, hosted by ElephantSQL. 
+A PostgreSQL database was used for storing the user and login information, hosted by ElephantSQL.
+
+## Running tests
+
+### API
+
+Install dependencies and run the test suite from the `api` folder:
+
+```bash
+cd api
+npm install
+npm test
+```
+
+### Frontend
+
+The frontend uses the default React testing setup:
+
+```bash
+cd frontend
+npm install
+npm test
+```
